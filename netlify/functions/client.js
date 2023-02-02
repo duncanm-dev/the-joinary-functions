@@ -67,9 +67,9 @@ exports.handler = async event => {
 
     return {
         statusCode: 200,
-        body: JSON.stringify({
+        body: {
             response_type: 'ephemeral',
             blocks
-        })
+        }
     }
 }
