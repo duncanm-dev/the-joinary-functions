@@ -2,15 +2,59 @@ const axios = require('axios');
 
 exports.handler = async event => {
 
-    const { text: clientName } = event.queryStringParameters;
+    const { text: dueBy } = event.queryStringParameters;
+    let within = 7
+
+    switch( dueBy ) {
+        case 'week':
+            within = 7;
+            break;
+        case 'fortnight':
+            within = 14;
+            break;
+        case 'month':
+            within = 30;
+            break;
+        case 'year':
+            within = 365;
+            break;
+    }
+
+    let blocks = [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `The following Tasks have Due Dates within *${within} days*.`
+                }
+            },
+            {
+                "type": "divider"
+            }
+        ];
 
     let tasks = await axios( {
         method: 'get',
-        url: "https://thejoinary.teamwork.com/tasklists/2440782/tasks.json",
+        url: `https://thejoinary.teamwork.com/tasklists/2440782/tasks.json?filter=within${within}&getSubTasks=no`,
         headers: {
             Authorization: "Basic dHdwX2RGV01pT0tSWXpUVnE3SlpqWktGa2VDanROY1M="
         }
     } );
+
+    taskBlocks = JSON.stringify(
+        tasks.data["todo-items"]
+            .map( x => {
+                return {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `<https://thejoinary.teamwork.com/app/tasks/${x.id}|*${x.content}*>\n\n ${x.description}`
+                    }
+                }
+             } )
+    );
+
+    blocks = blocks.concat( taskBlocks );
 
     // Teamwork calls here
 
@@ -25,7 +69,7 @@ exports.handler = async event => {
         statusCode: 200,
         body: JSON.stringify({
             response_type: 'ephemeral',
-            text: JSON.stringify(tasks)
+            blocks
         })
     }
 }
