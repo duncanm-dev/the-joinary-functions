@@ -41,7 +41,7 @@ exports.handler = async event => {
         }
     } );
 
-    taskBlocks = JSON.stringify(
+    taskBlocks = 
         tasks.data["todo-items"]
             .map( x => {
                 return {
@@ -51,8 +51,7 @@ exports.handler = async event => {
                         "text": `<https://thejoinary.teamwork.com/app/tasks/${x.id}|*${x.content}*>\n\n ${x.description}`
                     }
                 }
-             } )
-    );
+             } );
 
     blocks = blocks.concat( taskBlocks );
 
@@ -67,9 +66,9 @@ exports.handler = async event => {
 
     return {
         statusCode: 200,
-        body: {
+        body: JSON.stringify({
             response_type: 'ephemeral',
             blocks
-        }
+        })
     }
 }
