@@ -4,7 +4,7 @@ exports.handler = async event => {
 
     const { text: clientName } = event.queryStringParameters;
 
-    let tasks = axios( {
+    let tasks = await axios( {
         method: 'get',
         url: "https://thejoinary.teamwork.com/tasklists/2440782/tasks.json",
         headers: {
