@@ -48,7 +48,7 @@ exports.handler = async event => {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": `<https://thejoinary.teamwork.com/app/tasks/${x.id}|*${x.content}*>\n\n ${x.description}`
+                        "text": `<https://thejoinary.teamwork.com/app/tasks/${x.id}|*${x.content}*>\nDue on ${x['due-date'].slice(0,4) + '/' + x['due-date'].slice(4,6) + '/' + x['due-date'].slice(6, 8)}\n Assigned to ${x['responsible-party-names']?.split(',').join(', ') || 'no one'}.`
                     }
                 }
              } );
